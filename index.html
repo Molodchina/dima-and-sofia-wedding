@@ -9,257 +9,258 @@
   <meta property="og:description" content="Персональное приглашение на свадьбу — 18 сентября 2026 года." />
   <meta property="og:type" content="website" />
   <title>Свадьба Дмитрия и Софьи</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Marck+Script&display=swap" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=Marck+Script&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="intro-active">
-  <div id="intro" class="intro-screen" aria-label="Анимационное приглашение">
-    <button id="skipIntro" class="skip-intro" type="button">Пропустить</button>
-    <div class="intro-progress" aria-hidden="true"><span id="progressBar"></span></div>
-
-    <section class="intro-scene active" data-duration="4300">
-      <div class="scene-card illustration-card">
-        <img src="assets/scene-01-invitation.png" class="scene-bg contain-view no-zoom" alt="Акварельная заставка с замком и надписью Приглашение на свадьбу" />
-      </div>
-    </section>
-
-    <section class="intro-scene" data-duration="3600">
-      <div class="scene-card illustration-card">
-        <img src="assets/scene-02-bride.png" class="scene-bg contain-view no-zoom" alt="Акварельная сцена с платьем невесты и именем Софья" />
-      </div>
-    </section>
-
-    <section class="intro-scene" data-duration="3600">
-      <div class="scene-card illustration-card">
-        <img src="assets/scene-03-groom.png" class="scene-bg contain-view no-zoom" alt="Акварельная сцена с костюмом жениха и именем Дмитрий" />
-      </div>
-    </section>
-
-    <section class="intro-scene" data-duration="4300">
-      <div class="scene-card illustration-card">
-        <img src="assets/scene-04-together.png" class="scene-bg contain-view no-zoom" alt="Акварельная сцена с приглашением отпраздновать свадьбу вместе" />
-      </div>
-    </section>
-
-    <section class="intro-scene" data-duration="5600">
-      <div class="scene-card illustration-card">
-        <img src="assets/scene-05-details.png" class="scene-bg contain-view no-zoom" alt="Акварельная сцена с датой, временем и местом свадьбы" />
-      </div>
-    </section>
+  <!-- Одна заставка на основе акварельного пейзажа -->
+  <div id="intro" class="intro" aria-label="Заставка свадебного приглашения">
+    <div class="intro__wash" aria-hidden="true"></div>
+    <div class="intro__content">
+      <p class="intro__eyebrow">Приглашение на свадьбу</p>
+      <h1 class="intro__names">Дмитрий <span>и</span> Софья</h1>
+      <p class="intro__date">18 сентября 2026</p>
+      <p class="intro__line">Будем счастливы разделить этот день вместе с вами</p>
+      <button id="openInvitation" class="intro__button" type="button">Открыть приглашение</button>
+    </div>
+    <div class="intro__progress" aria-hidden="true"><span></span></div>
   </div>
 
   <main id="site" class="site hidden">
-    <header class="hero section-paper">
-      <div class="hero-inner">
-        <figure class="hero-art watercolor-figure reveal" aria-hidden="true">
-          <img src="assets/illustration-villa.png" alt="" />
-        </figure>
-        <p class="eyebrow" id="greeting">Дорогие гости!</p>
-        <h1 class="hero-title">Дмитрий <span>&amp;</span> Софья</h1>
-        <p class="hero-date">18 сентября 2026 · пятница</p>
-        <p class="hero-text">Мы будем счастливы разделить с вами один из самых важных дней нашей жизни и приглашаем вас на нашу свадьбу.</p>
-        <div class="hero-actions">
-          <a href="#details" class="btn btn-primary">Открыть приглашение</a>
-          <button id="calendarBtn" class="btn btn-outline" type="button">Добавить в календарь</button>
-        </div>
+    <!-- Главное окно приглашения: стилистика Save the Date -->
+    <header class="invitation-card hero-card reveal">
+      <figure class="hero-card__art" aria-hidden="true">
+        <img src="assets/art-hero-top.png" alt="" />
+      </figure>
+      <div class="hero-card__ornament" aria-hidden="true"></div>
+      <p class="editorial-label" id="greeting">Дорогие гости!</p>
+      <h1 class="script-title">Дмитрий и Софья</h1>
+      <p class="hero-card__small">приглашают вас на свадьбу</p>
+      <p class="hero-card__date">18 · 09 · 2026</p>
+      <p class="hero-card__weekday">пятница</p>
+      <p class="hero-card__copy">Мы будем счастливы разделить с вами один из самых важных дней нашей жизни.</p>
+      <div class="hero-actions">
+        <a href="#schedule" class="button button--filled">Программа дня</a>
+        <button id="calendarBtn" class="button button--outline" type="button">Добавить в календарь</button>
       </div>
     </header>
 
-    <section class="countdown-wrap">
-      <div class="countdown section-paper small-paper">
-        <p class="section-label">До встречи осталось</p>
-        <div class="countdown-grid" id="countdown">
-          <div><strong id="days">0</strong><span>дней</span></div>
-          <div><strong id="hours">0</strong><span>часов</span></div>
-          <div><strong id="minutes">0</strong><span>минут</span></div>
+    <section class="countdown-shell">
+      <div class="invitation-card countdown-card reveal">
+        <figure class="countdown-card__art" aria-hidden="true">
+          <img src="assets/art-meeting.png" alt="" />
+        </figure>
+        <div class="countdown-card__content">
+          <p class="editorial-label">До встречи осталось</p>
+          <div class="countdown-grid" id="countdown">
+            <div><strong id="days">0</strong><span>дней</span></div>
+            <div><strong id="hours">0</strong><span>часов</span></div>
+            <div><strong id="minutes">0</strong><span>минут</span></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="details" class="details section">
-      <div class="section-head">
-        <p class="section-label">Важная информация</p>
-        <h2>Наш день</h2>
+    <section id="schedule" class="page-section">
+      <div class="section-heading reveal">
+        <p class="editorial-label">18 сентября 2026</p>
+        <h2 class="script-title section-title">Наш день</h2>
+        <p class="section-subtitle">Три важных момента, которые мы мечтаем прожить вместе с вами.</p>
       </div>
-      <div class="timeline-card section-paper">
-        <div class="timeline-item timeline-item-simple">
-          <div class="time">11:20</div>
-          <div class="event">
+
+      <div class="schedule-grid">
+        <article class="invitation-card event-card reveal">
+          <figure class="event-card__image event-card__image--zags" aria-hidden="true">
+            <img src="assets/art-zags.webp" alt="" />
+          </figure>
+          <div class="event-card__copy">
+            <p class="event-time">11:20</p>
             <h3>Роспись в ЗАГСе</h3>
-            <p>Трогательное официальное начало нашего дня.</p>
+            <p>Официальное и очень трогательное начало нашего свадебного дня.</p>
           </div>
-        </div>
-        <div class="timeline-item illustrated-event">
-          <div class="time">13:00</div>
-          <div class="event">
+        </article>
+
+        <article class="invitation-card event-card reveal">
+          <figure class="event-card__image event-card__image--venchanie" aria-hidden="true">
+            <img src="assets/art-venchanie.png" alt="" />
+          </figure>
+          <div class="event-card__copy">
+            <p class="event-time">13:00</p>
             <h3>Венчание</h3>
-            <p>Особенный и очень важный для нас момент.</p>
+            <p>Особенный момент, наполненный теплом, смыслом и любовью.</p>
           </div>
-          <figure class="timeline-art reveal" aria-hidden="true">
-            <img src="assets/illustration-church.png" alt="" />
+        </article>
+
+        <article class="invitation-card event-card reveal">
+          <figure class="event-card__image event-card__image--table" aria-hidden="true">
+            <img src="assets/art-table.webp" alt="" />
           </figure>
-        </div>
-        <div class="timeline-item illustrated-event reverse-art">
-          <div class="time">15:00</div>
-          <div class="event">
+          <div class="event-card__copy">
+            <p class="event-time">15:00</p>
             <h3>Сбор гостей и welcome</h3>
-            <p>Встречаемся, обнимаемся и начинаем праздничный вечер.</p>
+            <p>Встречаемся, знакомимся, обнимаемся и начинаем праздничный вечер.</p>
           </div>
-          <figure class="timeline-art reveal" aria-hidden="true">
-            <img src="assets/illustration-dancers.png" alt="" />
-          </figure>
-        </div>
+        </article>
       </div>
     </section>
 
-    <section class="section split-layout">
-      <article class="section-paper info-card">
-        <p class="section-label">Место проведения</p>
-        <h2>12 Grand Cafe, Москва</h2>
-        <p>На данный момент место проведения — <strong>12 Grand Cafe</strong>, Москва.</p>
-        <p class="muted">Если появятся уточнения по адресу и логистике, мы обязательно сообщим их дополнительно.</p>
-        <a class="btn btn-outline" target="_blank" rel="noopener" href="https://yandex.ru/maps/?text=12%20Grand%20Cafe%20Москва">Открыть на карте</a>
-      </article>
-
-      <article class="section-paper info-card">
-        <p class="section-label">Пожелания</p>
-        <h2>Немного деталей</h2>
-        <ul class="soft-list">
-          <li><strong>Пожалуйста, без цветов.</strong></li>
-          <li>Самый ценный подарок для нас — ваше присутствие в этот день.</li>
-          <li>Если вы захотите поздравить нас дополнительно, мы будем рады подарку в конверте.</li>
-          <li>Если вам ближе выбрать подарок от себя, нам тоже будет очень приятно — мы будем рады вашему вниманию в любой форме.</li>
-        </ul>
-        <figure class="wishes-art reveal" aria-hidden="true">
-          <img src="assets/illustration-dog.png" alt="" />
+    <section class="page-section">
+      <article class="invitation-card route-card reveal">
+        <div class="route-card__copy">
+          <p class="editorial-label">Маршрут дня</p>
+          <h2 class="script-title section-title">От одного события к другому</h2>
+          <p>Между площадками будет время спокойно добраться, перевести дух и настроиться на следующую часть праздника.</p>
+        </div>
+        <figure class="route-card__art" aria-hidden="true">
+          <img src="assets/art-scooter.webp" alt="" />
         </figure>
       </article>
     </section>
 
-    <section class="section dress-code-section" id="dress-code">
-      <div class="section-head">
-        <p class="section-label">Дресс-код</p>
-        <h2>Festive garden / cocktail</h2>
+    <section class="page-section">
+      <div class="section-heading reveal">
+        <p class="editorial-label">Праздничный вечер</p>
+        <h2 class="script-title section-title">12 Grand Cafe</h2>
+      </div>
+
+      <article class="invitation-card venue-card reveal">
+        <figure class="venue-card__art">
+          <img src="assets/art-grand-cafe.webp" alt="Акварельная иллюстрация 12 Grand Cafe" />
+        </figure>
+        <div class="venue-card__copy">
+          <p class="editorial-label">Москва · сбор гостей в 15:00</p>
+          <h3>12 Grand Cafe</h3>
+          <p>Здесь продолжится наш праздник: welcome, ужин, поздравления, музыка и танцы.</p>
+          <p class="muted">Если появятся уточнения по адресу и логистике, мы обязательно сообщим их дополнительно.</p>
+          <a class="button button--outline" target="_blank" rel="noopener" href="https://yandex.ru/maps/?text=12%20Grand%20Cafe%20Москва">Открыть на карте</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="page-section">
+      <article class="invitation-card celebration-card reveal">
+        <div class="celebration-card__copy">
+          <p class="editorial-label">Вечером</p>
+          <h2 class="script-title section-title">Танцы и веселье</h2>
+          <p>После торжественной части будем много общаться, смеяться и танцевать. Удобная обувь для позднего вечера точно не будет лишней.</p>
+        </div>
+        <figure class="celebration-card__art" aria-hidden="true">
+          <img src="assets/art-dancers.webp" alt="" />
+        </figure>
+      </article>
+    </section>
+
+    <section id="dress-code" class="page-section">
+      <div class="section-heading reveal">
+        <p class="editorial-label">Дресс-код</p>
+        <h2 class="script-title section-title">Festive garden / cocktail</h2>
         <p class="section-subtitle">Нам будет особенно приятно, если вы поддержите мягкую, солнечную палитру нашего праздника.</p>
       </div>
 
-      <div class="dress-code-card section-paper reveal">
-        <div class="dress-code-copy">
-          <p class="dress-code-lead">Выбирайте нежные, тёплые и природные оттенки. Необязательно попадать в точный цвет — достаточно сохранить общее настроение палитры.</p>
-
-          <div class="palette-brushes" aria-label="Цветовая палитра свадьбы">
-            <div class="brush-swatch peach"><span>Персиковый</span></div>
-            <div class="brush-swatch apricot"><span>Абрикосовый</span></div>
-            <div class="brush-swatch blush"><span>Пудрово-розовый</span></div>
-            <div class="brush-swatch butter"><span>Масляно-жёлтый</span></div>
-            <div class="brush-swatch sage"><span>Шалфейный</span></div>
-            <div class="brush-swatch misty"><span>Дымчато-голубой</span></div>
-          </div>
-
-          <div class="dress-code-notes">
-            <article>
-              <h3>Для девушек</h3>
-              <p>Платья миди или макси, женственные костюмы и лёгкие комплекты в персиковых, пудровых, коралловых, сливочных, масляно-жёлтых, шалфейных и дымчато-голубых оттенках.</p>
-            </article>
-            <article>
-              <h3>Для мужчин</h3>
-              <p>Светло-серые, бежевые, песочные или оливковые костюмы и брюки. Образ можно дополнить аксессуаром в цветах свадьбы.</p>
-            </article>
-          </div>
-
-          <p class="dress-code-soft-note">Просим по возможности избегать полностью белых и полностью чёрных образов, неоновых оттенков, спортивной одежды и повседневного денима.</p>
+      <div class="invitation-card dress-code-card reveal">
+        <div class="palette" aria-label="Палитра свадьбы">
+          <div class="palette__swatch" style="--swatch:#FFC98C">Персиковый</div>
+          <div class="palette__swatch" style="--swatch:#FFB384">Абрикосовый</div>
+          <div class="palette__swatch" style="--swatch:#F6CEC7">Пудровый</div>
+          <div class="palette__swatch" style="--swatch:#FBE47E">Масляный</div>
+          <div class="palette__swatch" style="--swatch:#C7C29D">Шалфейный</div>
+          <div class="palette__swatch" style="--swatch:#B4C5D2">Голубой</div>
         </div>
 
-        <div class="dress-code-visuals" aria-label="Вдохновение для образов гостей">
-          <figure class="moodboard-card moodboard-primary reveal">
-            <img src="assets/dress-code-inspiration-01.webp" alt="Свадебная сервировка, пастельные цветы и платья в нежной палитре" />
-          </figure>
-          <figure class="moodboard-card moodboard-secondary reveal">
-            <img src="assets/dress-code-inspiration-02.webp" alt="Яркая цветочная палитра с персиковыми, розовыми, зелёными и голубыми оттенками" />
-          </figure>
+        <div class="dress-code-columns">
+          <article>
+            <h3>Для девушек</h3>
+            <p>Платья миди или макси, женственные костюмы и лёгкие комплекты в персиковых, пудровых, сливочных, масляно-жёлтых, шалфейных и дымчато-голубых оттенках.</p>
+          </article>
+          <article>
+            <h3>Для мужчин</h3>
+            <p>Светло-серые, бежевые, песочные или оливковые костюмы и брюки. Образ можно дополнить аксессуаром в цветах свадьбы.</p>
+          </article>
         </div>
+        <p class="soft-note">Просим по возможности избегать полностью белых и полностью чёрных образов, неоновых оттенков, спортивной одежды и повседневного денима.</p>
       </div>
     </section>
 
-    <section class="section">
-      <div class="section-head">
-        <p class="section-label">Ответ на приглашение</p>
-        <h2>Подтвердите, пожалуйста, ваше участие</h2>
+    <section class="page-section">
+      <article class="invitation-card wishes-card reveal">
+        <div class="wishes-card__copy">
+          <p class="editorial-label">Пожелания</p>
+          <h2 class="script-title section-title">Немного деталей</h2>
+          <ul>
+            <li><strong>Пожалуйста, без цветов.</strong></li>
+            <li>Самый ценный подарок для нас — ваше присутствие в этот день.</li>
+            <li>Если вы захотите поздравить нас дополнительно, мы будем рады подарку в конверте.</li>
+            <li>Если вам ближе выбрать подарок от себя, нам тоже будет очень приятно — мы будем рады вашему вниманию в любой форме.</li>
+          </ul>
+        </div>
+        <figure class="wishes-card__art" aria-hidden="true">
+          <img src="assets/art-dog-gifts.png" alt="" />
+        </figure>
+      </article>
+    </section>
+
+    <section class="page-section">
+      <div class="section-heading reveal">
+        <p class="editorial-label">Ответ на приглашение</p>
+        <h2 class="script-title section-title">Будете ли вы с нами?</h2>
         <p class="section-subtitle">Будем благодарны, если вы ответите заранее.</p>
       </div>
 
-      <form id="rsvpForm" class="section-paper rsvp-form">
-        <div class="form-row full">
+      <form id="rsvpForm" class="invitation-card rsvp-form reveal">
+        <div class="form-field form-field--full">
           <label for="guestNames">Кого мы приглашаем</label>
           <input id="guestNames" name="guestNames" type="text" readonly />
         </div>
 
-        <fieldset class="full attendance-options">
+        <fieldset class="attendance-options form-field--full">
           <legend>Как вы планируете присутствовать?</legend>
-          <label><input type="radio" name="attendance" value="Только на росписи" required> Только на росписи</label>
-          <label><input type="radio" name="attendance" value="Только на венчании"> Только на венчании</label>
-          <label><input type="radio" name="attendance" value="На венчании и банкете"> На венчании и банкете</label>
-          <label><input type="radio" name="attendance" value="На росписи и банкете"> На росписи и банкете</label>
-          <label><input type="radio" name="attendance" value="На росписи, венчании и банкете"> На росписи, венчании и банкете</label>
-          <label><input type="radio" name="attendance" value="К сожалению, не смогу присутствовать"> К сожалению, не смогу присутствовать</label>
+          <label><input type="radio" name="attendance" value="Только на росписи" required /> Только на росписи</label>
+          <label><input type="radio" name="attendance" value="Только на венчании" /> Только на венчании</label>
+          <label><input type="radio" name="attendance" value="На венчании и банкете" /> На венчании и банкете</label>
+          <label><input type="radio" name="attendance" value="На росписи и банкете" /> На росписи и банкете</label>
+          <label><input type="radio" name="attendance" value="На росписи, венчании и банкете" /> На росписи, венчании и банкете</label>
+          <label><input type="radio" name="attendance" value="К сожалению, не смогу присутствовать" /> К сожалению, не смогу присутствовать</label>
         </fieldset>
 
-        <div class="form-row">
+        <div class="form-field">
           <label for="contact">Телефон или Telegram</label>
-          <input id="contact" name="contact" type="text" placeholder="Чтобы при необходимости быстро связаться с вами" />
+          <input id="contact" name="contact" type="text" placeholder="Чтобы при необходимости связаться с вами" />
         </div>
 
-        <div class="form-row">
+        <div class="form-field">
           <label for="comment">Комментарий</label>
-          <textarea id="comment" name="comment" rows="4" placeholder="При желании вы можете оставить комментарий"></textarea>
+          <textarea id="comment" name="comment" rows="4" placeholder="При желании оставьте комментарий"></textarea>
         </div>
 
-        <div class="form-row full consent-row">
-          <label class="checkbox-line"><input type="checkbox" name="consent" required> Я согласен(на) на обработку указанных данных исключительно для организации свадебного мероприятия.</label>
+        <div class="form-field form-field--full">
+          <label class="consent"><input type="checkbox" name="consent" required /> Я согласен(на) на обработку указанных данных исключительно для организации свадебного мероприятия.</label>
         </div>
 
-        <div class="form-actions">
-          <button class="btn btn-primary" type="submit">Отправить ответ</button>
+        <div class="form-submit form-field--full">
+          <button class="button button--filled" type="submit">Отправить ответ</button>
           <p id="formStatus" class="form-status" aria-live="polite"></p>
         </div>
       </form>
     </section>
 
-    <section class="section organizers">
-      <article class="section-paper info-card organizers-card">
-        <p class="section-label">Организаторы</p>
-        <h2>По всем вопросам можно обращаться</h2>
-        <p><strong>Агентство ZABAVY RADI</strong></p>
-        <div class="contact-grid">
-          <div>
-            <h3>Лена</h3>
-            <a href="tel:+79376314016">+7 937 631 4016</a>
-          </div>
-          <div>
-            <h3>София</h3>
-            <a href="tel:+79160301520">+7 916 030 1520</a>
-          </div>
+    <section class="page-section">
+      <article class="invitation-card contacts-card reveal">
+        <p class="editorial-label">Организаторы</p>
+        <h2 class="script-title section-title">По всем вопросам</h2>
+        <p>Агентство <strong>ZABAVY RADI</strong></p>
+        <div class="contacts-grid">
+          <div><span>Лена</span><a href="tel:+79376314016">+7 937 631 4016</a></div>
+          <div><span>София</span><a href="tel:+79160301520">+7 916 030 1520</a></div>
         </div>
       </article>
     </section>
 
-    <section class="closing-scene section">
-      <div class="closing-card section-paper reveal">
-        <figure class="closing-art" aria-hidden="true">
-          <img src="assets/illustration-couple.png" alt="" />
-        </figure>
-        <div class="closing-copy">
-          <p class="section-label">До встречи</p>
-          <h2>Будем счастливы провести этот день вместе с вами</h2>
-          <p>С любовью, Дмитрий и Софья</p>
-        </div>
-      </div>
-    </section>
-
     <footer class="footer">
-      <p>18 сентября 2026</p>
+      <p class="script-title">До встречи!</p>
+      <span>Дмитрий и Софья</span>
     </footer>
   </main>
 

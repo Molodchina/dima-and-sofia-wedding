@@ -1,237 +1,181 @@
 (function () {
   const config = window.WEDDING_CONFIG || {};
-  const intro = document.getElementById('intro');
-  const site = document.getElementById('site');
-  const scenes = Array.from(document.querySelectorAll('.intro-scene'));
-  const progressBar = document.getElementById('progressBar');
-  const skipIntroBtn = document.getElementById('skipIntro');
-
   const url = new URL(window.location.href);
-  const inviteSlug = url.searchParams.get('invite');
-  const guestString = url.searchParams.get('guests');
-  const inviteData = resolveInvite(inviteSlug, guestString);
+  const slug = url.searchParams.get("invite");
+  const guestString = url.searchParams.get("guests");
 
-  personalize(inviteData);
-  startCountdown();
-  setupCalendar();
-  setupForm(inviteData, inviteSlug || 'custom');
-  setupScrollReveal();
-  setupIntro();
+  init().catch((error) => {
+    console.error(error);
+    revealSite();
+  });
 
-  function resolveInvite(slug, guestsParam) {
-    if (slug && config.invites && config.invites[slug]) {
-      return config.invites[slug];
-    }
-    if (guestsParam) {
-      const guests = guestsParam.split(',').map(v => v.trim()).filter(Boolean);
-      return { greeting: formatNeutralGreeting(guests), guests };
-    }
-    return { greeting: 'Дорогие гости!', guests: ['Гость'] };
+  async function init() {
+    const invitation = await loadInvitation(slug, guestString);
+    personalize(invitation);
+    setupIntro();
+    setupCountdown();
+    setupCalendar();
+    setupForm(invitation, slug || "custom");
+    setupReveal();
   }
 
-  function personalize(data) {
-    const greetingEl = document.getElementById('greeting');
-    const namesField = document.getElementById('guestNames');
-    if (greetingEl) greetingEl.textContent = data.greeting || 'Дорогие гости!';
-    if (namesField) namesField.value = (data.guests || []).join(', ');
-  }
-
-  function formatNeutralGreeting(guests) {
-    if (!guests || !guests.length) return 'Дорогие гости!';
-    if (guests.length === 1) return `${guests[0]}, мы будем счастливы видеть вас!`;
-    const last = guests[guests.length - 1];
-    return `${guests.slice(0, -1).join(', ')} и ${last}, мы будем счастливы видеть вас!`;
-  }
-
-  function startCountdown() {
-    const target = new Date(config.date.iso).getTime();
-    const daysEl = document.getElementById('days');
-    const hoursEl = document.getElementById('hours');
-    const minutesEl = document.getElementById('minutes');
-
-    function update() {
-      const now = Date.now();
-      const diff = target - now;
-      if (diff <= 0) {
-        daysEl.textContent = '0';
-        hoursEl.textContent = '0';
-        minutesEl.textContent = '0';
-        return;
+  async function loadInvitation(invitationSlug, guestsParam) {
+    if (invitationSlug && config.apiBase) {
+      try {
+        const response = await fetch(`${config.apiBase}/api/invitation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: invitationSlug })
+        });
+        if (response.ok) return response.json();
+      } catch (error) {
+        console.warn("API invitation loading failed", error);
       }
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      daysEl.textContent = String(days);
-      hoursEl.textContent = String(hours);
-      minutesEl.textContent = String(minutes);
     }
+    if (invitationSlug && config.invites && config.invites[invitationSlug]) return config.invites[invitationSlug];
+    if (guestsParam) {
+      const guests = guestsParam.split(",").map((item) => item.trim()).filter(Boolean);
+      return { greeting: neutralGreeting(guests), guests };
+    }
+    return { greeting: "Дорогие гости!", guests: ["Гость"] };
+  }
+
+  function neutralGreeting(guests) {
+    if (!guests.length) return "Дорогие гости!";
+    if (guests.length === 1) return `${guests[0]}, мы будем счастливы видеть вас!`;
+    return `${guests.slice(0, -1).join(", ")} и ${guests.at(-1)}, мы будем счастливы видеть вас!`;
+  }
+
+  function personalize(invitation) {
+    document.getElementById("greeting").textContent = invitation.greeting || "Дорогие гости!";
+    document.getElementById("guestNames").value = (invitation.guests || []).join(", ");
+  }
+
+  function setupIntro() {
+    const button = document.getElementById("openInvitation");
+    button.addEventListener("click", revealSite);
+    window.setTimeout(revealSite, 9000);
+  }
+
+  function revealSite() {
+    const intro = document.getElementById("intro");
+    const site = document.getElementById("site");
+    if (!intro || intro.dataset.closed === "true") return;
+    intro.dataset.closed = "true";
+    site.classList.remove("hidden");
+    requestAnimationFrame(() => site.classList.add("revealed"));
+    document.body.classList.remove("intro-active");
+    intro.style.opacity = "0";
+    intro.style.visibility = "hidden";
+    window.setTimeout(() => intro.remove(), 850);
+  }
+
+  function setupCountdown() {
+    const target = new Date(config.date.iso).getTime();
+    const fields = {
+      days: document.getElementById("days"),
+      hours: document.getElementById("hours"),
+      minutes: document.getElementById("minutes")
+    };
+    const update = () => {
+      const difference = Math.max(0, target - Date.now());
+      fields.days.textContent = String(Math.floor(difference / 86400000));
+      fields.hours.textContent = String(Math.floor(difference / 3600000) % 24);
+      fields.minutes.textContent = String(Math.floor(difference / 60000) % 60);
+    };
     update();
-    setInterval(update, 60000);
+    window.setInterval(update, 60000);
   }
 
   function setupCalendar() {
-    const btn = document.getElementById('calendarBtn');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
+    document.getElementById("calendarBtn").addEventListener("click", () => {
       const ics = [
-        'BEGIN:VCALENDAR',
-        'VERSION:2.0',
-        'PRODID:-//Wedding Invitation//RU',
-        'BEGIN:VEVENT',
-        'UID:wedding-dmitriy-sofya-20260918@example.com',
-        'DTSTAMP:20250101T000000Z',
-        'DTSTART:20260918T082000Z',
-        'DTEND:20260918T190000Z',
-        'SUMMARY:Свадьба Дмитрия и Софьи',
-        'DESCRIPTION:Роспись в 11:20. Венчание в 13:00. Сбор гостей и welcome в 15:00.',
-        `LOCATION:${config.venue.name}`,
-        'END:VEVENT',
-        'END:VCALENDAR'
-      ].join('\r\n');
-
-      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
-      const link = document.createElement('a');
+        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Wedding Invitation//RU", "BEGIN:VEVENT",
+        "UID:wedding-dmitriy-sofya-20260918@dmitrii-sofia-wedding.ru", "DTSTAMP:20260730T000000Z",
+        "DTSTART:20260918T082000Z", "DTEND:20260918T190000Z", "SUMMARY:Свадьба Дмитрия и Софьи",
+        "DESCRIPTION:Роспись в 11:20. Венчание в 13:00. Сбор гостей и welcome в 15:00.",
+        `LOCATION:${config.venue.name}`, "END:VEVENT", "END:VCALENDAR"
+      ].join("\r\n");
+      const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+      const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = 'svadba-dmitriya-i-sofi.ics';
+      link.download = "svadba-dmitriya-i-sofi.ics";
       link.click();
       URL.revokeObjectURL(link.href);
     });
   }
 
-  function setupForm(inviteData, slug) {
-    const form = document.getElementById('rsvpForm');
-    const status = document.getElementById('formStatus');
-    if (!form) return;
-
-    const storageKey = `wedding-rsvp:${slug}`;
+  function setupForm(invitation, invitationSlug) {
+    const form = document.getElementById("rsvpForm");
+    const status = document.getElementById("formStatus");
+    const storageKey = `wedding-rsvp:${invitationSlug}`;
     const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
         const data = JSON.parse(saved);
-        if (data.attendance) {
-          const radio = form.querySelector(`input[name="attendance"][value="${cssEscape(data.attendance)}"]`);
-          if (radio) radio.checked = true;
-        }
-        if (data.contact) form.contact.value = data.contact;
-        if (data.comment) form.comment.value = data.comment;
-        if (data.consent) form.consent.checked = true;
-        status.textContent = 'Ранее вы уже отправляли ответ. При необходимости его можно обновить.';
-      } catch (e) {}
+        const radio = [...form.querySelectorAll('input[name="attendance"]')].find((item) => item.value === data.attendanceStatus);
+        if (radio) radio.checked = true;
+        form.contact.value = data.contact || "";
+        form.comment.value = data.comment || "";
+        form.consent.checked = Boolean(data.consent);
+        status.textContent = "Ранее отправленный ответ можно изменить и сохранить повторно.";
+      } catch (_) {}
     }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
       const attendance = form.querySelector('input[name="attendance"]:checked');
-      if (!attendance) {
-        status.textContent = 'Пожалуйста, выберите вариант присутствия.';
-        return;
-      }
+      if (!attendance) return;
       const payload = {
-        inviteSlug: slug,
-        guests: inviteData.guests,
-        greeting: inviteData.greeting,
-        attendance: attendance.value,
+        slug: invitationSlug,
+        guests: invitation.guests,
+        attendanceStatus: attendance.value,
         contact: form.contact.value.trim(),
         comment: form.comment.value.trim(),
-        consent: !!form.consent.checked,
+        consent: Boolean(form.consent.checked),
         submittedAt: new Date().toISOString()
       };
-
-      localStorage.setItem(storageKey, JSON.stringify(payload));
-      addAdminIndex(slug, payload);
-      status.textContent = 'Спасибо! Ваш ответ сохранён. До встречи на нашем празднике!';
-
-      if (config.webhookUrl) {
-        try {
-          await fetch(config.webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+      status.textContent = "Сохраняем ответ…";
+      try {
+        if (config.apiBase && invitationSlug !== "custom") {
+          const response = await fetch(`${config.apiBase}/api/rsvp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
           });
-        } catch (err) {
-          console.warn('Webhook unavailable', err);
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.error || "Не удалось сохранить ответ");
         }
+        localStorage.setItem(storageKey, JSON.stringify(payload));
+        updateLocalIndex(invitationSlug, payload);
+        status.textContent = "Спасибо! Ваш ответ сохранён. До встречи на нашем празднике!";
+      } catch (error) {
+        status.textContent = error.message || "Не удалось сохранить ответ. Попробуйте ещё раз.";
       }
     });
   }
 
-  function addAdminIndex(slug, payload) {
-    const indexKey = 'wedding-rsvp:index';
-    const existing = JSON.parse(localStorage.getItem(indexKey) || '[]');
-    const filtered = existing.filter(item => item.inviteSlug !== slug);
-    filtered.push({ inviteSlug: slug, submittedAt: payload.submittedAt });
-    localStorage.setItem(indexKey, JSON.stringify(filtered));
+  function updateLocalIndex(invitationSlug, payload) {
+    const key = "wedding-rsvp:index";
+    const index = JSON.parse(localStorage.getItem(key) || "[]").filter((item) => item.inviteSlug !== invitationSlug);
+    index.push({ inviteSlug: invitationSlug, submittedAt: payload.submittedAt });
+    localStorage.setItem(key, JSON.stringify(index));
   }
 
-  function setupScrollReveal() {
-    const elements = Array.from(document.querySelectorAll('.reveal'));
-    if (!elements.length) return;
-    if (!('IntersectionObserver' in window)) {
-      elements.forEach(el => el.classList.add('is-visible'));
+  function setupReveal() {
+    const elements = document.querySelectorAll(".reveal");
+    if (!("IntersectionObserver" in window)) {
+      elements.forEach((element) => element.classList.add("is-visible"));
       return;
     }
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
+          entry.target.classList.add("is-visible");
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.18, rootMargin: '0px 0px -6% 0px' });
-    elements.forEach(el => observer.observe(el));
-  }
-
-  function setupIntro() {
-    if (!intro || !site || !scenes.length) return;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const previewMode = url.searchParams.get('preview') === '1';
-    if (reduceMotion || previewMode) {
-      endIntro();
-      return;
-    }
-
-    let current = 0;
-    let ended = false;
-    let timer = null;
-    let elapsedTotal = 0;
-    const totalDuration = scenes.reduce((sum, scene) => sum + Number(scene.dataset.duration || 2500), 0);
-
-    if (skipIntroBtn) skipIntroBtn.addEventListener('click', endIntro);
-
-    function playScene(index) {
-      if (ended) return;
-      scenes.forEach((scene, i) => scene.classList.toggle('active', i === index));
-      const duration = Number(scenes[index].dataset.duration || 2500);
-      progressBar.style.width = `${Math.min(100, (elapsedTotal / totalDuration) * 100)}%`;
-
-      timer = setTimeout(() => {
-        elapsedTotal += duration;
-        progressBar.style.width = `${Math.min(100, (elapsedTotal / totalDuration) * 100)}%`;
-        current += 1;
-        if (current < scenes.length) {
-          playScene(current);
-        } else {
-          timer = setTimeout(endIntro, 280);
-        }
-      }, duration);
-    }
-
-    playScene(current);
-
-    function endIntro() {
-      if (ended) return;
-      ended = true;
-      if (timer) clearTimeout(timer);
-      intro.style.opacity = '0';
-      intro.style.pointerEvents = 'none';
-      site.classList.remove('hidden');
-      requestAnimationFrame(() => site.classList.add('revealed'));
-      document.body.classList.remove('intro-active');
-      setTimeout(() => intro.remove(), 560);
-    }
-  }
-
-  function cssEscape(value) {
-    return String(value).replace(/(["\\])/g, '\\$1');
+    }, { threshold: 0.14 });
+    elements.forEach((element) => observer.observe(element));
   }
 })();
