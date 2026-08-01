@@ -315,10 +315,42 @@ body.intro-active { overflow: hidden; }
 .event-card__image--zags img { width: 92%; image-rendering: auto; }
 .event-card__image--table img { width: 100%; }
 .event-card__image--venchanie img { width: 96%; max-height: 195px; }
-.event-card__copy { position: relative; z-index: 1; }
+.event-card__copy { position: relative; z-index: 1; display: flex; flex: 1; flex-direction: column; }
 .event-time { margin: 0; color: var(--rose-dark); font-family: var(--serif); font-size: 31px; letter-spacing: .08em; }
 .event-card h3, .venue-card h3, .dress-code-columns h3 { margin: 6px 0 8px; color: var(--olive-dark); font-family: var(--serif); font-size: 27px; font-weight: 500; }
 .event-card p, .route-card p, .venue-card p, .celebration-card p, .dress-code-card p, .wishes-card li, .contacts-card p { font-family: var(--serif); font-size: 19px; line-height: 1.5; }
+.event-location {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.event-location p,
+.event-location address,
+.venue-address address {
+  margin: 0;
+  font-style: normal;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.42;
+}
+.event-location p + p,
+.event-location address {
+  margin-top: 6px;
+}
+.event-location .event-location__name {
+  color: var(--ink);
+  font-size: 18px;
+}
+.event-location a {
+  display: inline-flex;
+  margin-top: 12px;
+  color: var(--rose-dark);
+  font-family: var(--serif);
+  font-size: 17px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 
 .route-card, .celebration-card { display: grid; grid-template-columns: 1.05fr .95fr; align-items: center; padding: 36px 44px; }
 .route-card__copy, .celebration-card__copy { position: relative; z-index: 1; }
@@ -330,6 +362,19 @@ body.intro-active { overflow: hidden; }
 .venue-card__art { margin: 0; min-height: 380px; display: grid; place-items: center; }
 .venue-card__art img { width: 100%; max-height: 440px; object-fit: contain; }
 .venue-card__copy { position: relative; z-index: 1; padding: 12px 5px; }
+.venue-address {
+  margin: 18px 0 20px;
+  padding: 15px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.venue-address__label {
+  margin: 0 0 5px;
+  color: var(--rose-dark);
+  font-size: 16px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
 .muted { color: var(--muted); }
 
 .dress-code-card { padding: 38px; }
@@ -403,6 +448,7 @@ input[type="radio"], input[type="checkbox"] { margin-top: 3px; accent-color: var
 @media (max-width: 860px) {
   .schedule-grid { grid-template-columns: 1fr; }
   .event-card { min-height: 0; }
+  .event-location { margin-top: 16px; }
   .route-card, .celebration-card, .venue-card, .wishes-card { grid-template-columns: 1fr; }
   .countdown-card { grid-template-columns: 1fr; max-width: 620px; }
   .countdown-card__art { margin: -8px auto -4px; }
