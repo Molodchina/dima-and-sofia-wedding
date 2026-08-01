@@ -1,21 +1,45 @@
-# Свадебное приглашение Дмитрия и Софьи
+# Wedding invitation — Дмитрий и Софья
 
-Актуальная версия сайта использует одну акварельную заставку `assets/intro-mountains.webp`.
-Старые многоэкранные заставки удалены из проекта.
+Статический фронтенд для GitHub Pages, подключённый к собственному API:
 
-## Основные файлы
-- `index.html` — актуальная разметка сайта
-- `styles.css` — оформление и адаптивность
-- `app.js` — заставка, таймер, персонализация и RSVP
-- `config.js` — данные мероприятия и API
-- `admin.html` — административная страница
-- `assets/` — акварельные иллюстрации
+- сайт: `https://dmitrii-sofia-wedding.ru`;
+- API: `https://api.dmitrii-sofia-wedding.ru`;
+- админка: `https://dmitrii-sofia-wedding.ru/admin.html`.
 
-## Локальный запуск
-Откройте `index.html` либо запустите статический сервер:
+## Публикация
+
+Скопируйте содержимое этой папки в корень GitHub-репозитория и выполните:
 
 ```bash
-python3 -m http.server 8080
+git add .
+git commit -m "Connect wedding frontend to private API"
+git push origin main
 ```
 
-После этого откройте `http://localhost:8080`.
+## Персональная ссылка
+
+```text
+https://dmitrii-sofia-wedding.ru/?invite=SLUG_ИЗ_БАЗЫ
+```
+
+Имена гостей не хранятся во фронтенде и загружаются через `POST /api/invitation`.
+
+## Админка
+
+Админка использует серверные endpoints:
+
+- `POST /api/admin/login`;
+- `GET /api/admin/session`;
+- `GET /api/admin/responses`;
+- `POST /api/admin/logout`.
+
+JWT хранится в защищённой `HttpOnly` cookie. В `config.js` не должны находиться пароль, email администратора, JWT-секрет или пароль базы данных.
+
+## Требования к API
+
+API должен разрешать CORS для:
+
+- `https://dmitrii-sofia-wedding.ru`;
+- `https://www.dmitrii-sofia-wedding.ru`.
+
+Для административных запросов необходимы `Access-Control-Allow-Credentials: true` и cookie с параметрами `HttpOnly`, `Secure`, `SameSite=Lax`, `Path=/`.

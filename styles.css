@@ -436,6 +436,15 @@ input[type="radio"], input[type="checkbox"] { margin-top: 3px; accent-color: var
   .palette__swatch { font-size: 12px; }
   .countdown-grid strong { font-size: 35px; }
 }
+
+/* RSVP API states */
+.form-status--success { color: #5f7547; }
+.form-status--error { color: #a85252; }
+button:disabled,
+input:disabled,
+textarea:disabled { cursor: not-allowed; opacity: .62; }
+button[aria-busy="true"] { cursor: wait; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

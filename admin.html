@@ -3,104 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noimageindex" />
-  <title>Ответы гостей — Свадьба Дмитрия и Софьи</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    body{margin:0;background:#f7f1ea;color:#3b342f;font-family:Inter,sans-serif;padding:24px}
-    .wrap{max-width:1100px;margin:0 auto}
-    .card{background:#fffaf4;border:1px solid rgba(133,117,104,.25);border-radius:24px;box-shadow:0 18px 50px rgba(75,57,44,.10);padding:22px}
-    h1,h2{font-family:'Cormorant Garamond',serif;margin:0 0 12px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-    button{border:1px solid #8c6b4e;background:#8c6b4e;color:#fff;border-radius:999px;padding:12px 16px;cursor:pointer;font-weight:600}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    th,td{padding:12px;border-bottom:1px dashed rgba(133,117,104,.32);vertical-align:top;text-align:left}
-    th{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#73685f}
-    .muted{color:#73685f}
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:18px}
-    .stat{padding:16px;border:1px dashed rgba(133,117,104,.35);border-radius:18px;background:#fff}
-    .stat strong{display:block;font-size:28px;font-family:'Cormorant Garamond',serif}
-  </style>
+  <meta name="robots" content="noindex,nofollow,noarchive,nosnippet" />
+  <title>Админка — свадьба Дмитрия и Софьи</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <div>
-        <h1>Ответы гостей</h1>
-        <p class="muted">Локальный просмотр ответов из браузера. Для общего доступа можно подключить Google Sheets или серверный webhook.</p>
+  <main class="admin-shell">
+    <section id="loginView" class="admin-card admin-login">
+      <p class="admin-eyebrow">Дмитрий и Софья</p>
+      <h1>Вход в админку</h1>
+      <p class="admin-lead">Введите данные администратора, указанные в переменных окружения на сервере.</p>
+
+      <form id="adminLoginForm" class="admin-form">
+        <label>
+          <span>Email</span>
+          <input type="email" name="email" autocomplete="username" required />
+        </label>
+        <label>
+          <span>Пароль</span>
+          <input type="password" name="password" autocomplete="current-password" minlength="8" required />
+        </label>
+        <button type="submit" class="admin-button admin-button--primary">Войти</button>
+        <p id="loginStatus" class="admin-status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="dashboardView" class="admin-dashboard" hidden>
+      <header class="admin-header">
+        <div>
+          <p class="admin-eyebrow">Панель организаторов</p>
+          <h1>Ответы гостей</h1>
+        </div>
+        <div class="admin-actions">
+          <button id="reloadResponses" type="button" class="admin-button">Обновить</button>
+          <button id="exportCsv" type="button" class="admin-button">Скачать CSV</button>
+          <button id="logoutButton" type="button" class="admin-button admin-button--danger">Выйти</button>
+        </div>
+      </header>
+
+      <div class="admin-summary">
+        <article><span>Всего приглашений</span><strong id="summaryTotal">0</strong></article>
+        <article><span>Ответили</span><strong id="summaryAnswered">0</strong></article>
+        <article><span>Планируют быть</span><strong id="summaryAttending">0</strong></article>
+        <article><span>Не смогут быть</span><strong id="summaryDeclined">0</strong></article>
       </div>
-      <button id="exportCsv">Скачать CSV</button>
-    </div>
 
-    <div class="card">
-      <div class="stats" id="stats"></div>
-      <table>
-        <thead>
-          <tr>
-            <th>Ссылка</th>
-            <th>Гости</th>
-            <th>Ответ</th>
-            <th>Контакт</th>
-            <th>Комментарий</th>
-            <th>Дата</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-  </div>
+      <p id="dashboardStatus" class="admin-status" aria-live="polite"></p>
 
-  <script>
-    const index = JSON.parse(localStorage.getItem('wedding-rsvp:index') || '[]');
-    const rows = document.getElementById('rows');
-    const stats = document.getElementById('stats');
-    const responses = index.map(item => {
-      const data = JSON.parse(localStorage.getItem(`wedding-rsvp:${item.inviteSlug}`) || '{}');
-      return data;
-    }).filter(Boolean);
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Гости</th>
+              <th>Статус</th>
+              <th>Контакт</th>
+              <th>Комментарий</th>
+              <th>Обновлено</th>
+              <th>Slug</th>
+              <th>Макс.</th>
+            </tr>
+          </thead>
+          <tbody id="responsesBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
 
-    const total = responses.length;
-    const declined = responses.filter(r => (r.attendance || '').includes('не смогу')).length;
-    const ceremony = responses.filter(r => (r.attendance || '').includes('венчании') || (r.attendance || '').includes('росписи')).length;
-
-    stats.innerHTML = `
-      <div class="stat"><strong>${total}</strong><span>Всего ответов</span></div>
-      <div class="stat"><strong>${Math.max(total - declined, 0)}</strong><span>Придут</span></div>
-      <div class="stat"><strong>${declined}</strong><span>Не смогут</span></div>
-      <div class="stat"><strong>${ceremony}</strong><span>Участвуют хотя бы в одной части дня</span></div>
-    `;
-
-    rows.innerHTML = responses.map(r => `
-      <tr>
-        <td>${r.inviteSlug || ''}</td>
-        <td>${(r.guests || []).join(', ')}</td>
-        <td>${r.attendance || ''}</td>
-        <td>${r.contact || ''}</td>
-        <td>${r.comment || ''}</td>
-        <td>${r.submittedAt ? new Date(r.submittedAt).toLocaleString('ru-RU') : ''}</td>
-      </tr>
-    `).join('') || '<tr><td colspan="6">Пока нет сохранённых ответов.</td></tr>';
-
-    document.getElementById('exportCsv').addEventListener('click', () => {
-      const header = ['Ссылка','Гости','Ответ','Контакт','Комментарий','Дата'];
-      const lines = responses.map(r => [
-        r.inviteSlug || '',
-        (r.guests || []).join(', '),
-        r.attendance || '',
-        r.contact || '',
-        r.comment || '',
-        r.submittedAt ? new Date(r.submittedAt).toLocaleString('ru-RU') : ''
-      ]);
-      const csv = [header, ...lines].map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
-      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'wedding-rsvp.csv';
-      link.click();
-      URL.revokeObjectURL(link.href);
-    });
-  </script>
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>
