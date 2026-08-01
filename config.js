@@ -1,5 +1,7 @@
 window.WEDDING_CONFIG = Object.freeze({
   apiBase: "https://api.dmitrii-sofia-wedding.ru",
+  publicBaseUrl: "https://dmitrii-sofia-wedding.ru",
+  maxInvitationGuests: 20,
   introDurationMs: 9000,
   date: {
     iso: "2026-09-18T11:20:00+03:00"

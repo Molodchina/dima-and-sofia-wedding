@@ -3,6 +3,10 @@
 
   const config = window.WEDDING_CONFIG || {};
   const apiBase = String(config.apiBase || "").trim().replace(/\/+$/, "");
+  const publicBaseUrl = String(config.publicBaseUrl || window.location.origin)
+    .trim()
+    .replace(/\/+$/, "");
+  const maxInvitationGuests = Number(config.maxInvitationGuests || 20);
 
   const loginView = document.getElementById("loginView");
   const dashboardView = document.getElementById("dashboardView");
@@ -237,8 +241,16 @@
       return null;
     }
 
-    if (!Number.isInteger(maxGuests) || maxGuests < guests.length || maxGuests > 4) {
-      setStatus(invitationStatus, "Максимум гостей должен быть от количества гостей в списке до 4.", true);
+    if (
+      !Number.isInteger(maxGuests) ||
+      maxGuests < guests.length ||
+      maxGuests > maxInvitationGuests
+    ) {
+      setStatus(
+        invitationStatus,
+        `Максимум гостей должен быть от количества гостей в списке до ${maxInvitationGuests}.`,
+        true
+      );
       return null;
     }
 
@@ -387,7 +399,7 @@
     const guestsCount = parseGuests(invitationForm.elements.guests.value).length;
     const currentMax = Number(invitationForm.elements.maxGuests.value || 0);
     if (guestsCount && (!currentMax || currentMax < guestsCount)) {
-      invitationForm.elements.maxGuests.value = String(Math.min(guestsCount, 4));
+      invitationForm.elements.maxGuests.value = String(Math.min(guestsCount, maxInvitationGuests));
     }
   }
 
@@ -578,9 +590,7 @@
   }
 
   function buildInvitationLink(slug) {
-    const path = window.location.pathname.replace(/admin\.html$/, "");
-    const base = `${window.location.origin}${path}`;
-    return `${base}?invite=${encodeURIComponent(slug)}`;
+    return `${publicBaseUrl}/?invite=${encodeURIComponent(slug)}`;
   }
 
   function slugify(value) {

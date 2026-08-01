@@ -53,6 +53,17 @@ https://dmitrii-sofia-wedding.ru/admin.html
 }
 ```
 
+Если база уже была создана со старым ограничением на 4 гостей, перед использованием новых приглашений выполните на PostgreSQL:
+
+```sql
+alter table guest_invitations
+  drop constraint if exists guest_invitations_max_guests_check;
+
+alter table guest_invitations
+  add constraint guest_invitations_max_guests_check
+  check (max_guests between 1 and 20);
+```
+
 ## 3. CORS
 
 API должен разрешать только:
