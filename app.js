@@ -184,7 +184,7 @@
         return;
       }
 
-      const title = (config.calendar && config.calendar.title) || "Свадьба Дмитрия и Софьи";
+      const title = (config.calendar && config.calendar.title) || "Свадьба Дмитрия и Софии";
       const description = (config.calendar && config.calendar.description) ||
         "Роспись в 11:20. Венчание в 13:00. Сбор гостей и welcome в 15:00.";
       const location = (config.venue && config.venue.name) || "Москва";

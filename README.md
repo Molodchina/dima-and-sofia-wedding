@@ -1,4 +1,4 @@
-# Wedding invitation — Дмитрий и Софья
+# Wedding invitation — Дмитрий и София
 
 Статический фронтенд для GitHub Pages, подключённый к собственному API:
 
