@@ -33,8 +33,25 @@ https://dmitrii-sofia-wedding.ru/admin.html
 
 - `POST /api/admin/login`;
 - `GET /api/admin/session`;
+- `GET /api/admin/invitations`;
+- `POST /api/admin/invitations`;
+- `PUT /api/admin/invitations/:slug`;
+- `PATCH /api/admin/invitations/:slug/active`;
+- `DELETE /api/admin/invitations/:slug`;
 - `GET /api/admin/responses`;
 - `POST /api/admin/logout`.
+
+Тело создания/редактирования приглашения:
+
+```json
+{
+  "slug": "anna-mikhail-a1b2c3d4e5f6",
+  "greeting": "Дорогие Анна и Михаил!",
+  "guests": ["Анна", "Михаил"],
+  "maxGuests": 2,
+  "isActive": true
+}
+```
 
 ## 3. CORS
 

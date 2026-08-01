@@ -30,10 +30,17 @@ https://dmitrii-sofia-wedding.ru/?invite=SLUG_ИЗ_БАЗЫ
 
 - `POST /api/admin/login`;
 - `GET /api/admin/session`;
+- `GET /api/admin/invitations`;
+- `POST /api/admin/invitations`;
+- `PUT /api/admin/invitations/:slug`;
+- `PATCH /api/admin/invitations/:slug/active`;
+- `DELETE /api/admin/invitations/:slug`;
 - `GET /api/admin/responses`;
 - `POST /api/admin/logout`.
 
 JWT хранится в защищённой `HttpOnly` cookie. В `config.js` не должны находиться пароль, email администратора, JWT-секрет или пароль базы данных.
+
+Через админку можно создавать и редактировать приглашения, генерировать безопасный slug, копировать персональную ссылку, включать/выключать приглашение и удалять его с подтверждением. Удаление приглашения также удаляет связанный RSVP-ответ на стороне БД.
 
 ## Требования к API
 

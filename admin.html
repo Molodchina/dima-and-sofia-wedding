@@ -36,10 +36,10 @@
       <header class="admin-header">
         <div>
           <p class="admin-eyebrow">Панель организаторов</p>
-          <h1>Ответы гостей</h1>
+          <h1>Приглашения и ответы</h1>
         </div>
         <div class="admin-actions">
-          <button id="reloadResponses" type="button" class="admin-button">Обновить</button>
+          <button id="reloadResponses" type="button" class="admin-button">Обновить всё</button>
           <button id="exportCsv" type="button" class="admin-button">Скачать CSV</button>
           <button id="logoutButton" type="button" class="admin-button admin-button--danger">Выйти</button>
         </div>
@@ -53,6 +53,94 @@
       </div>
 
       <p id="dashboardStatus" class="admin-status" aria-live="polite"></p>
+
+      <section class="admin-panel">
+        <div class="admin-panel__header">
+          <div>
+            <p class="admin-eyebrow">Управление</p>
+            <h2 id="invitationFormTitle">Новое приглашение</h2>
+          </div>
+          <button id="resetInvitationForm" type="button" class="admin-button">Очистить форму</button>
+        </div>
+
+        <form id="invitationForm" class="admin-form admin-invitation-form">
+          <input type="hidden" name="originalSlug" />
+
+          <label>
+            <span>Гости</span>
+            <textarea name="guests" rows="3" maxlength="500" placeholder="Анна, Михаил" required></textarea>
+          </label>
+
+          <label>
+            <span>Обращение</span>
+            <input type="text" name="greeting" maxlength="500" placeholder="Дорогие Анна и Михаил!" required />
+          </label>
+
+          <div class="admin-form-grid">
+            <label>
+              <span>Slug</span>
+              <input type="text" name="slug" minlength="8" maxlength="160" pattern="[A-Za-z0-9_-]+" required />
+            </label>
+
+            <label>
+              <span>Максимум гостей</span>
+              <input type="number" name="maxGuests" min="1" max="4" value="1" required />
+            </label>
+          </div>
+
+          <div class="admin-form-row">
+            <label class="admin-checkbox">
+              <input type="checkbox" name="isActive" checked />
+              <span>Приглашение активно</span>
+            </label>
+            <button id="generateSlug" type="button" class="admin-button">Сгенерировать slug</button>
+          </div>
+
+          <div class="admin-link-preview">
+            <span id="invitationLinkPreview" class="admin-monospace">Ссылка появится после slug</span>
+            <button id="copyInvitationLink" type="button" class="admin-button">Копировать ссылку</button>
+          </div>
+
+          <div class="admin-actions">
+            <button type="submit" class="admin-button admin-button--primary">Сохранить приглашение</button>
+          </div>
+
+          <p id="invitationStatus" class="admin-status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-panel__header">
+          <div>
+            <p class="admin-eyebrow">Список</p>
+            <h2>Приглашения</h2>
+          </div>
+        </div>
+
+        <div class="admin-table-wrap">
+          <table class="admin-table admin-table--invitations">
+            <thead>
+              <tr>
+                <th>Гости</th>
+                <th>Slug</th>
+                <th>Статус</th>
+                <th>Ответ</th>
+                <th>Обновлено</th>
+                <th>Действия</th>
+              </tr>
+            </thead>
+            <tbody id="invitationsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-panel__header">
+          <div>
+            <p class="admin-eyebrow">RSVP</p>
+            <h2>Ответы гостей</h2>
+          </div>
+        </div>
 
       <div class="admin-table-wrap">
         <table class="admin-table">
@@ -70,6 +158,7 @@
           <tbody id="responsesBody"></tbody>
         </table>
       </div>
+      </section>
     </section>
   </main>
 
